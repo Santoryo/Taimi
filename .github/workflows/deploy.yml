@@ -25,5 +25,5 @@ jobs:
             git reset --hard &&
             git pull origin main &&
             npm install &&
-            pm2 restart my-node-app
+            pm2 restart taimi
           "
