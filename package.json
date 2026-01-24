@@ -16,7 +16,8 @@
     "lint": "eslint 'src/**/*.ts'",
     "db:migrate": "drizzle-kit migrate",
     "db:generate": "drizzle-kit generate",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
@@ -55,5 +56,9 @@
     "postgres": "^3.4.8",
     "swagger-ui-express": "^5.0.1",
     "tsoa": "^7.0.0-alpha.0"
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix",
+    "*.{js,css,md}": "prettier --write"
   }
 }
