@@ -1,22 +1,22 @@
-import { integer, pgEnum, pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
+import { integer, pgTable, serial, unique, uniqueIndex, varchar } from "drizzle-orm/pg-core";
 import { users } from "../user/user.model";
-import { date } from "drizzle-orm/pg-core";
-import { time } from "drizzle-orm/pg-core";
 import { timestamp } from "drizzle-orm/pg-core";
-
 
 export const characters = pgTable("characters", {
     id: serial("id").primaryKey(),
     userId: varchar("user_id", { length: 36 }).notNull().references(() => users.id, { onDelete: "cascade" }),
-    name: varchar("name", { length: 255 }).notNull(),
+    name: varchar("name", { length: 255 }).notNull().unique(),
     race: varchar("race", {length: 20}).notNull(),
     profession: varchar("profession", { length: 100 }).notNull(),
+    elite: varchar("elite", { length: 100 }),
     gender: varchar("gender", {length: 10}).notNull(),
     level: integer("level").notNull(),
-    created: timestamp("created").notNull(),
     deaths: integer("deaths").notNull().default(0),
     age: integer("age").notNull().default(0),
     title: integer("title").notNull().default(0),
+    accessedOrder: integer("accessed_order").notNull(),
+    created: timestamp("created").notNull(),
+    updated: timestamp("updated").defaultNow().notNull()
 });
 
 export const equipment = pgTable("equipment", {
@@ -30,14 +30,31 @@ export const equipment = pgTable("equipment", {
     dyes: integer("dyes").array(),
     upgrades: integer("upgrades").array(),
     infusions: integer("infusions").array(),
-});
+},
+  (table) => ({
+    characterSlotUnique: uniqueIndex().on(table.characterId, table.slot),
+  })
+);
 
 export const specializationsPve = pgTable("specializations_pve", {
     id: serial("id").primaryKey(),
     characterId: integer("character_id").notNull().references(() => characters.id, { onDelete: "cascade" }),
-    specializationId: integer("specialization_id").notNull(),
-    traits: integer("traits").array().notNull(),
-});
+    index: integer("index").notNull(),
+    specId: integer("spec_id"),
+    traits: integer("traits").array()
+},
+  (table) => ({
+    specializationSlotUnique: uniqueIndex().on(table.characterId, table.index),
+  })
+);
+
+export const SkillsPve = pgTable("skills_pve", {
+  id: serial("id").primaryKey(),
+  characterId: integer("character_id").notNull().references(() => characters.id, { onDelete: "cascade" }).unique(),
+  heal: integer("heal"),
+  utilities: integer("utilities").array(3),
+  elite: integer("elite")
+}) 
 
 export type InsertCharacter = typeof characters.$inferInsert;
 export type SelectCharacter = typeof characters.$inferSelect;

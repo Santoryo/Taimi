@@ -1,0 +1,464 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"EquipmentDTO": {
+				"properties": {
+					"infusions": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array",
+						"nullable": true
+					},
+					"upgrades": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array",
+						"nullable": true
+					},
+					"dyes": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array",
+						"nullable": true
+					},
+					"binding": {
+						"type": "string",
+						"nullable": true
+					},
+					"statsId": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"skinId": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"slot": {
+						"type": "string"
+					},
+					"itemId": {
+						"type": "number",
+						"format": "double"
+					},
+					"characterId": {
+						"type": "number",
+						"format": "double"
+					},
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"infusions",
+					"upgrades",
+					"dyes",
+					"binding",
+					"statsId",
+					"skinId",
+					"slot",
+					"itemId",
+					"characterId",
+					"id"
+				],
+				"type": "object"
+			},
+			"SpecializationDTO": {
+				"properties": {
+					"traits": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array",
+						"nullable": true
+					},
+					"specId": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					}
+				},
+				"required": [
+					"traits",
+					"specId"
+				],
+				"type": "object"
+			},
+			"SkillsDTO": {
+				"properties": {
+					"elite": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					},
+					"utilities": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array",
+						"nullable": true
+					},
+					"heal": {
+						"type": "number",
+						"format": "double",
+						"nullable": true
+					}
+				},
+				"required": [
+					"elite",
+					"utilities",
+					"heal"
+				],
+				"type": "object"
+			},
+			"FullCharacterDTO": {
+				"properties": {
+					"title": {
+						"type": "number",
+						"format": "double"
+					},
+					"age": {
+						"type": "number",
+						"format": "double"
+					},
+					"deaths": {
+						"type": "number",
+						"format": "double"
+					},
+					"created": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"level": {
+						"type": "number",
+						"format": "double"
+					},
+					"gender": {
+						"type": "string"
+					},
+					"profession": {
+						"type": "string"
+					},
+					"race": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"userId": {
+						"type": "string"
+					},
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"equipment": {
+						"items": {
+							"$ref": "#/components/schemas/EquipmentDTO"
+						},
+						"type": "array"
+					},
+					"specialization": {
+						"items": {
+							"$ref": "#/components/schemas/SpecializationDTO"
+						},
+						"type": "array"
+					},
+					"skills": {
+						"$ref": "#/components/schemas/SkillsDTO"
+					}
+				},
+				"required": [
+					"title",
+					"age",
+					"deaths",
+					"created",
+					"level",
+					"gender",
+					"profession",
+					"race",
+					"name",
+					"userId",
+					"id",
+					"equipment",
+					"specialization",
+					"skills"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {
+			"supabase": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			}
+		}
+	},
+	"info": {
+		"title": "Taimi",
+		"version": "1.0.0",
+		"description": "Taimi is a RESTful API backend service for Tyria.Tools and GW2 Armory.",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"paths": {
+		"/users": {
+			"post": {
+				"operationId": "CreateUser",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"properties": {
+											"twitchId": {
+												"type": "number",
+												"format": "double"
+											},
+											"apiKey": {
+												"type": "string"
+											},
+											"created": {
+												"type": "string",
+												"format": "date-time"
+											},
+											"name": {
+												"type": "string"
+											},
+											"id": {
+												"type": "string"
+											},
+											"auth_uid": {
+												"type": "string"
+											}
+										},
+										"required": [
+											"twitchId",
+											"apiKey",
+											"created",
+											"name",
+											"id",
+											"auth_uid"
+										],
+										"type": "object"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a user",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"supabase": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"apiKey": {
+										"type": "string"
+									}
+								},
+								"type": "object"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteUser",
+				"responses": {
+					"200": {
+						"description": "Deleted",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"properties": {
+											"twitchId": {
+												"type": "number",
+												"format": "double"
+											},
+											"apiKey": {
+												"type": "string"
+											},
+											"created": {
+												"type": "string",
+												"format": "date-time"
+											},
+											"name": {
+												"type": "string"
+											},
+											"id": {
+												"type": "string"
+											},
+											"auth_uid": {
+												"type": "string"
+											}
+										},
+										"required": [
+											"twitchId",
+											"apiKey",
+											"created",
+											"name",
+											"id",
+											"auth_uid"
+										],
+										"type": "object"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete the authenticated user",
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"supabase": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/character/{name}": {
+			"get": {
+				"operationId": "GetCharacterRoute",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/FullCharacterDTO"
+										}
+									],
+									"nullable": true
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "name",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/character/user/{username}": {
+			"get": {
+				"operationId": "GetCharacterListByUsernameRoute",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"type": "string"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "username",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

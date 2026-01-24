@@ -1,20 +1,33 @@
-import { Request, Response, NextFunction } from 'express';
-import { db } from '../../database/database';
-import { characters } from './character.model';
-import { error } from 'node:console';
+import {
+  Controller,
+  Get,
+  Path,
+  Res,
+  Route,
+  TsoaResponse,
+} from "tsoa";
+import { getCharacterByName, getCharacterListByUsername } from "./character.service";
+import { FullCharacterDTO } from "./character";
 
-export const getCharacterById = async(req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
-    try {
-        // Logic to get character by ID
-        res.json({ message: `Character with ID: ${id}` });
-    } catch (error) {
-        next(error);
+@Route("character")
+export class CharacterControler extends Controller {
+    @Get("{name}")
+    public async getCharacterRoute(@Path() name: string, @Res() notFound: TsoaResponse<404, { message: string }>): Promise<FullCharacterDTO | null>
+    {
+      const character = await getCharacterByName(name);
+
+      if(!character)
+      {
+        return notFound(404, { message: `Character '${name}' not found` });
+      }
+      
+      return character;
     }
-};
 
-export const createCharacter = async(req: Request, res: Response, next: NextFunction) => {
-
-
-
+   @Get("/user/{username}")
+   public async getCharacterListByUsernameRoute(@Path() username: string, @Res() notFound: TsoaResponse<404, { message: string }>): Promise<string[]>
+    {
+        const usernames = await getCharacterListByUsername(username);
+        return usernames;
+    }
 }

@@ -1,9 +1,74 @@
 {
-  "id": "76e40b82-63f4-48c5-92a7-a2f8060b9bfb",
+  "id": "a00fc8c5-5b00-4e94-ab2c-bfb59a6ef18c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.skills_pve": {
+      "name": "skills_pve",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "character_id": {
+          "name": "character_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "heal": {
+          "name": "heal",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "utilities": {
+          "name": "utilities",
+          "type": "integer[3]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "elite": {
+          "name": "elite",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "skills_pve_character_id_characters_id_fk": {
+          "name": "skills_pve_character_id_characters_id_fk",
+          "tableFrom": "skills_pve",
+          "tableTo": "characters",
+          "columnsFrom": [
+            "character_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "skills_pve_character_id_unique": {
+          "name": "skills_pve_character_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "character_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.characters": {
       "name": "characters",
       "schema": "",
@@ -38,6 +103,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "elite": {
+          "name": "elite",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
         "gender": {
           "name": "gender",
           "type": "varchar(10)",
@@ -47,12 +118,6 @@
         "level": {
           "name": "level",
           "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created": {
-          "name": "created",
-          "type": "timestamp",
           "primaryKey": false,
           "notNull": true
         },
@@ -76,6 +141,25 @@
           "primaryKey": false,
           "notNull": true,
           "default": 0
+        },
+        "accessed_order": {
+          "name": "accessed_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created": {
+          "name": "created",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated": {
+          "name": "updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -95,7 +179,15 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "characters_name_unique": {
+          "name": "characters_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -165,7 +257,29 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "equipment_character_id_slot_index": {
+          "name": "equipment_character_id_slot_index",
+          "columns": [
+            {
+              "expression": "character_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "slot",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "equipment_character_id_characters_id_fk": {
           "name": "equipment_character_id_characters_id_fk",
@@ -203,20 +317,48 @@
           "primaryKey": false,
           "notNull": true
         },
-        "specialization_id": {
-          "name": "specialization_id",
+        "index": {
+          "name": "index",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
+        },
+        "spec_id": {
+          "name": "spec_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         },
         "traits": {
           "name": "traits",
           "type": "integer[]",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "specializations_pve_character_id_index_index": {
+          "name": "specializations_pve_character_id_index_index",
+          "columns": [
+            {
+              "expression": "character_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "index",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "specializations_pve_character_id_characters_id_fk": {
           "name": "specializations_pve_character_id_characters_id_fk",
@@ -233,7 +375,15 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "specializations_pve_character_id_unique": {
+          "name": "specializations_pve_character_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "character_id"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -242,6 +392,12 @@
       "name": "users",
       "schema": "",
       "columns": {
+        "auth_uid": {
+          "name": "auth_uid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
         "id": {
           "name": "id",
           "type": "varchar(36)",
@@ -265,12 +421,25 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "twitch_id": {
+          "name": "twitch_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
+        "users_auth_uid_unique": {
+          "name": "users_auth_uid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "auth_uid"
+          ]
+        },
         "users_id_unique": {
           "name": "users_id_unique",
           "nullsNotDistinct": false,
@@ -283,6 +452,64 @@
           "nullsNotDistinct": false,
           "columns": [
             "api_key"
+          ]
+        },
+        "users_twitch_id_unique": {
+          "name": "users_twitch_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "twitch_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.professions_static": {
+      "name": "professions_static",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "elite_spec_id": {
+          "name": "elite_spec_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "profession": {
+          "name": "profession",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "icon": {
+          "name": "icon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "professions_static_name_unique": {
+          "name": "professions_static_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
           ]
         }
       },
