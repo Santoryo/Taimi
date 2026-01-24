@@ -10,6 +10,7 @@
     "tsoa:build": "tsoa spec-and-routes",
     "build": "tsoa spec-and-routes && tsc",
     "start": "node ./build/src/app.js",
+    "start:worker": "node ./build/src/worker.js",
     "dev": "nodemon --watch \"src/**/*.ts\" --exec \"npm run build:dev\"",
     "build:dev": "npm run tsoa:build && ts-node src/app.ts",
     "dev:worker": "nodemon --watch \"src/**/*.ts\" --exec \"ts-node src/worker.ts\"",
