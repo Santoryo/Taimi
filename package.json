@@ -17,7 +17,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
-    "prepare": "husky install"
+    "prepare": "husky install || true"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
