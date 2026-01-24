@@ -14,6 +14,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.get('/health', (req, res) => {
+  res.send({"version": "0.0.1", "status": "ok", "uptime": process.uptime()})
+})
 app.use(morgan("common"));
 
 RegisterRoutes(app);
