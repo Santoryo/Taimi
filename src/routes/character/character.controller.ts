@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Path,
+  Post,
   Res,
   Route,
   TsoaResponse,
@@ -29,5 +30,12 @@ export class CharacterControler extends Controller {
     {
         const usernames = await getCharacterListByUsername(username);
         return usernames;
+    }
+
+    @Post("/{name}/update")
+    public async requestUpdateNowForCharacter(@Path() name: string): Promise<string>
+    {
+      this.setStatus(202);
+      return ""
     }
 }

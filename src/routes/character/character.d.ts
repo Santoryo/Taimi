@@ -37,7 +37,8 @@ export type SkillsDTO = {
 }
 
 export interface FullCharacterDTO extends CharacterDTO {
-    equipment: EquipmentDTO[]
+    equipment: EquipmentDTO[];
+    profession: any;
     specialization: SpecializationDTO[];
     skills: SkillsDTO;
 }

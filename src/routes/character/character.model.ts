@@ -8,7 +8,7 @@ export const characters = pgTable("characters", {
     name: varchar("name", { length: 255 }).notNull().unique(),
     race: varchar("race", {length: 20}).notNull(),
     profession: varchar("profession", { length: 100 }).notNull(),
-    elite: varchar("elite", { length: 100 }),
+    elite: varchar("elite", { length: 100 }).notNull(),
     gender: varchar("gender", {length: 10}).notNull(),
     level: integer("level").notNull(),
     deaths: integer("deaths").notNull().default(0),

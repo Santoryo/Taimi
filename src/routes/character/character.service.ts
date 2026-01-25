@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, asc, eq, lt } from "drizzle-orm";
 import { db } from "../../database/database";
 import { characters, equipment, SkillsPve, specializationsPve } from "./character.model";
 import { Gw2Service } from "../../services/gw2.service";
@@ -10,6 +10,8 @@ import { GW2Character } from "../../services/gw2.interfaces";
 import { CharacterDTO, EquipmentDTO, FullCharacterDTO } from "./character";
 import logger from "../../core/logger";
 import { getProfession } from "../../services/gw2.db.service";
+import { professions } from "../../services/gw2.model";
+import config from "../../config/config";
 
 export async function updateCharacterInDb(apiKey: string, userId: string)
 {
@@ -145,10 +147,16 @@ export async function getCharacterByName(name: string): Promise<FullCharacterDTO
         .from(SkillsPve)
         .where(eq(SkillsPve.characterId, character.id))
         .limit(1);
-    
+
+    const [ profession ] = await db
+        .select()
+        .from(professions)
+        .where(eq(professions.name, character.elite))
+        .limit(1);
 
     return {
         ...character,
+        profession: profession,
         equipment: equipmentReq,
         specialization: specializationsReq,
         skills: skillsReq[0] ?? null
@@ -163,7 +171,48 @@ export async function getCharacterListByUsername(name: string): Promise<string[]
     {
         return [];
     }
-    const characternames = await db.select({name: characters.name}).from(characters).where(eq(characters.userId, uid[0].user_id));
+    const characternames = await db.select({name: characters.name}).from(characters).where(eq(characters.userId, uid[0].user_id)).orderBy(asc(characters.accessedOrder));
 
     return characternames.map(c => c.name);
+}
+
+export async function tryUpdateCharacter(name: string): Promise<boolean> {
+  const now = new Date();
+  const cutoff = new Date(Date.now() - config.minimumUpdateTime);
+
+  const updatedRows = await db
+    .update(characters)
+    .set({ updated: now })
+    .where(
+      and(
+        eq(characters.name, name),
+        lt(characters.updated, cutoff)
+      )
+    )
+    .returning({
+      userId: characters.userId
+    });
+
+  if (updatedRows.length === 0) {
+    return false;
+  }
+
+  const [row] = await db
+    .select({
+      userId: users.id,
+      apiKey: users.apiKey
+    })
+    .from(users)
+    .where(eq(users.id, updatedRows[0].userId))
+    .limit(1);
+
+  if (!row) return false;
+
+  await characterQueue.add(
+    "characters-update",
+    { userId: row.userId, apiKey: row.apiKey },
+    { priority: 1 }
+  );
+
+  return true;
 }
