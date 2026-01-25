@@ -145,7 +145,7 @@ export async function getCharacterByName(name: string): Promise<FullCharacterDTO
 
     return {
         ...character,
-        profession: profession,
+        professionIcon: profession.icon,
         equipment: equipmentReq,
         specialization: specializationsReq,
         skills: skillsReq[0] ?? null,
