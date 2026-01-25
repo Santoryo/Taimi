@@ -8,8 +8,10 @@ import morgan from 'morgan';
 import logger from './core/logger';
 import './preload';
 import pkg from '../package.json'
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
 
 // Middlewares
 app.use(express.json());
