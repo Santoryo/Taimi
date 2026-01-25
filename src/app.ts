@@ -7,6 +7,7 @@ import { RegisterRoutes } from '../build/routes';
 import morgan from 'morgan';
 import logger from './core/logger';
 import './preload';
+import pkg from '../package.json'
 
 const app = express();
 
@@ -15,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get('/health', (req, res) => {
-    res.send({ version: '0.0.1', status: 'ok', uptime: process.uptime() });
+    res.send({ version: pkg.version, status: 'ok', uptime: process.uptime() });
 });
 app.use(morgan('common'));
 
