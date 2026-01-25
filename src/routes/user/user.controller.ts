@@ -59,6 +59,18 @@ export class UsersController extends Controller {
         return usernames;
     }
 
+    @Get('/twitch/{twitchId}')
+    public async getUsernameForTwitchId(
+        @Path() twitchId: number,
+        @Res() notFound: TsoaResponse<404, { message: string }>,
+    ): Promise<string | {message: string}> {
+        const [user] = await db.select({username: users.name}).from(users).where(eq(users.twitchId, twitchId)).limit(1);
+        if(!user) throw new Error("twitchId not found");
+        return user.username;
+    }
+
+
+
     @Post('{username}/characters/update')
     public async requestUpdateNowForUser(
         @Path() username: string,
