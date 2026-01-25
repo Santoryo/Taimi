@@ -63,10 +63,10 @@ export class UsersController extends Controller {
     public async getUsernameForTwitchId(
         @Path() twitchId: number,
         @Res() notFound: TsoaResponse<404, { message: string }>,
-    ): Promise<string | {message: string}> {
+    ): Promise<{username: string} | {message: string}> {
         const [user] = await db.select({username: users.name}).from(users).where(eq(users.twitchId, twitchId)).limit(1);
         if(!user) throw new Error("twitchId not found");
-        return user.username;
+        return user;
     }
 
 
