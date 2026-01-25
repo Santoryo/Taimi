@@ -1,4 +1,4 @@
-import { and, asc, eq, lt } from 'drizzle-orm';
+import { and, asc, eq, lt, notInArray } from 'drizzle-orm';
 import { db } from '../../database/database';
 import { characters, equipment, SkillsPve, specializationsPve } from './character.model';
 import { Gw2Service } from '../../services/gw2.service';
@@ -46,6 +46,12 @@ export async function updateCharacterInDb(apiKey: string, userId: string) {
                 set: characterDetails,
             })
             .returning();
+
+        const apiSlots = character.equipment.map(eq => eq.slot);
+
+        await db
+            .delete(equipment)
+            .where(and(eq(equipment.characterId, characterResponse[0].id), notInArray(equipment.slot, apiSlots)));
 
         for (const eq of character.equipment) {
             const equipmentDetails = {
