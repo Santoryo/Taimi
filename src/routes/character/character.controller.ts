@@ -7,7 +7,7 @@ import {
   Route,
   TsoaResponse,
 } from "tsoa";
-import { getCharacterByName, getCharacterListByUsername } from "./character.service";
+import { getCharacterByName } from "./character.service";
 import { FullCharacterDTO } from "./character";
 
 @Route("character")
@@ -23,19 +23,5 @@ export class CharacterControler extends Controller {
       }
       
       return character;
-    }
-
-   @Get("/user/{username}")
-   public async getCharacterListByUsernameRoute(@Path() username: string, @Res() notFound: TsoaResponse<404, { message: string }>): Promise<string[]>
-    {
-        const usernames = await getCharacterListByUsername(username);
-        return usernames;
-    }
-
-    @Post("/{name}/update")
-    public async requestUpdateNowForCharacter(@Path() name: string): Promise<string>
-    {
-      this.setStatus(202);
-      return ""
     }
 }

@@ -10,7 +10,8 @@ export const users = pgTable("users", {
     name: varchar("name", { length: 255 }).notNull(),
     created: timestamp("created").notNull(),
     apiKey: text("api_key").unique(),
-    twitchId: integer("twitch_id").unique()
+    twitchId: integer("twitch_id").unique(),
+    updated: timestamp("updated").defaultNow().notNull()
 });
 
 export type InsertUser = typeof users.$inferInsert;

@@ -1,18 +1,15 @@
 import { Response, NextFunction } from 'express';
 import { db } from '../../database/database';
 import { users } from './user.model';
-import { createUserInDb } from './user.service';
+import { createUserInDb, getCharacterListByUsername, requestCharactersUpdate } from './user.service';
 import { eq } from 'drizzle-orm';
-import { Body, Controller, Post, Route, SuccessResponse, Tags, Request, Delete, Middlewares, Security } from 'tsoa';
+import { Body, Controller, Post, Route, SuccessResponse, Tags, Request, Delete, Middlewares, Security, Path, Get, Res, TsoaResponse } from 'tsoa';
 import * as express from "express";
 import { UUID } from 'node:crypto';
 
 @Route("users")
 @Tags("Users")
 export class UsersController extends Controller {
-  /**
-   * Create a user
-   */
   @Post()
   @SuccessResponse("201", "Created")
   @Security("supabase")
@@ -33,9 +30,6 @@ export class UsersController extends Controller {
     return user;
   }
 
-  /**
-   * Delete the authenticated user
-   */
   @Delete()
   @SuccessResponse("200", "Deleted")
   @Security("supabase")
@@ -49,30 +43,18 @@ export class UsersController extends Controller {
 
     return user;
   }
+
+  @Get("/{username}/characters")
+  public async getCharacterListByUsernameRoute(@Path() username: string, @Res() notFound: TsoaResponse<404, { message: string }>): Promise<string[]> {
+    const usernames = await getCharacterListByUsername(username);
+    return usernames;
+  }
+
+
+  @Post("/{username}/characters/update")
+  public async requestUpdateNowForUser(@Path() username: string): Promise<boolean> {
+    const status = await requestCharactersUpdate(username);
+    this.setStatus(202);
+    return status;
+  }
 }
-
-
-// export const createUser = async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//         if (!req.body) {
-//             throw new Error("`apiKey` not found in body");
-//         }
-
-//         const { apiKey = null } = req.body;
-//         const user = await createUserInDb(apiKey, req);
-
-//         res.status(201).json(user);
-//     } catch (error) {
-//         next(error);
-//     }
-// };
-
-// export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//         const user = await db.delete(users).where(eq(req.user.id, users.auth_uid)).returning();
-
-//         res.status(201).json(user);
-//     } catch (error) {
-//         next(error);
-//     }
-// }
