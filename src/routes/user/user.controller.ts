@@ -60,7 +60,6 @@ export class UsersController extends Controller {
     }
 
     @Post('{username}/characters/update')
-    @Security('supabase')
     public async requestUpdateNowForUser(
         @Path() username: string,
         @Res() tooSoon: TsoaResponse<429, { message: string; retryAfterSeconds: number }>,
