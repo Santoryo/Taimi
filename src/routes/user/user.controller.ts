@@ -18,6 +18,7 @@ import {
     Get,
     Res,
     TsoaResponse,
+    Query,
 } from 'tsoa';
 import * as express from 'express';
 import { UUID } from 'node:crypto';
@@ -28,14 +29,14 @@ export class UsersController extends Controller {
     @Post()
     @SuccessResponse('201', 'Created')
     @Security('supabase')
-    public async createUser(@Body() body: { apiKey?: string }, @Request() req: express.Request) {
-        const { apiKey = null } = body;
+    public async createUser(@Body() body: { apiKey?: string, twitchId?: number }, @Request() req: express.Request) {
+        const { apiKey = null, twitchId = undefined } = body;
 
         if (!apiKey) {
             throw new Error('`apiKey` not found in body');
         }
 
-        const user = await createUserInDb(apiKey, req.user.sub);
+        const user = await createUserInDb(apiKey, req.user.sub, twitchId);
 
         this.setStatus(201);
         return user;
