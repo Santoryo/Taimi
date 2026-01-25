@@ -1,6 +1,6 @@
 {
-    "id": "a00fc8c5-5b00-4e94-ab2c-bfb59a6ef18c",
-    "prevId": "00000000-0000-0000-0000-000000000000",
+    "id": "0cea5bb2-aedb-4901-898f-d29b2dd316f9",
+    "prevId": "c246ba33-67f6-4b70-97f8-90b7bf798e6e",
     "version": "7",
     "dialect": "postgresql",
     "tables": {
@@ -101,7 +101,7 @@
                     "name": "elite",
                     "type": "varchar(100)",
                     "primaryKey": false,
-                    "notNull": false
+                    "notNull": true
                 },
                 "gender": {
                     "name": "gender",
@@ -355,13 +355,7 @@
                 }
             },
             "compositePrimaryKeys": {},
-            "uniqueConstraints": {
-                "specializations_pve_character_id_unique": {
-                    "name": "specializations_pve_character_id_unique",
-                    "nullsNotDistinct": false,
-                    "columns": ["character_id"]
-                }
-            },
+            "uniqueConstraints": {},
             "policies": {},
             "checkConstraints": {},
             "isRLSEnabled": false
@@ -405,6 +399,13 @@
                     "type": "integer",
                     "primaryKey": false,
                     "notNull": false
+                },
+                "updated": {
+                    "name": "updated",
+                    "type": "timestamp",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
                 }
             },
             "indexes": {},

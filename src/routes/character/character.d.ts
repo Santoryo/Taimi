@@ -10,7 +10,7 @@ export type CharacterDTO = {
     deaths: number;
     age: number;
     title: number;
-}
+};
 
 export type EquipmentDTO = {
     id: number;
@@ -23,18 +23,18 @@ export type EquipmentDTO = {
     dyes: number[] | null;
     upgrades: number[] | null;
     infusions: number[] | null;
-}
+};
 
 export type SpecializationDTO = {
     specId: number | null;
     traits: number[] | null;
-}
+};
 
 export type SkillsDTO = {
     heal: number | null;
     utilities: number[] | null;
     elite: number | null;
-}
+};
 
 export interface FullCharacterDTO extends CharacterDTO {
     equipment: EquipmentDTO[];
