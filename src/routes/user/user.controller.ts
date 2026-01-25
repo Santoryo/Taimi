@@ -56,6 +56,7 @@ export class UsersController extends Controller {
     public async getUser(@Request() req: express.Request)
     {
       const [user] = await db.select().from(users).where(eq(users.auth_uid, req.user.sub)).limit(1);
+      if(!user) return null;
       return user;
     }
 

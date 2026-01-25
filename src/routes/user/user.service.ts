@@ -14,7 +14,7 @@ export async function createUserInDb(apiKey: string, auth_uid?: string, twitchId
 
     console.log(auth_uid);
 
-    const newUser = await db
+    const [ newUser ] = await db
         .insert(users)
         .values({ id: userData.id, apiKey: apiKey, name: userData.name, created: new Date(userData.created), auth_uid: auth_uid, twitchId: twitchId })
         .onConflictDoUpdate({
@@ -22,7 +22,7 @@ export async function createUserInDb(apiKey: string, auth_uid?: string, twitchId
             set: { apiKey: apiKey, name: userData.name, auth_uid: auth_uid, twitchId: twitchId }
         }).returning();
 
-    await characterQueue.add("characters-update", { userId: newUser[0].id, apiKey }, { priority: 1 });
+    await characterQueue.add("characters-update", { userId: newUser.id, apiKey }, { priority: 1 });
 
     return newUser;
 }
