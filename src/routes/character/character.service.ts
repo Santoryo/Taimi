@@ -16,6 +16,16 @@ import config from '../../config/config';
 export async function updateCharacterInDb(apiKey: string, userId: string) {
     const gw2Api = new Gw2Service(apiKey);
     const charactersData: GW2Character[] = await gw2Api.getCharacters();
+    const apiCharacterNames = charactersData.map(c => c.name);
+
+    await db
+        .delete(characters)
+        .where(
+            and(
+                eq(characters.userId, userId),
+                notInArray(characters.name, apiCharacterNames)
+            )
+        );
 
     for (const [index, character] of charactersData.entries()) {
         const elite = await getProfession(character.specializations.pve[2].id, character.profession);

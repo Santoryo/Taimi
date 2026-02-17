@@ -21,7 +21,6 @@ import {
     Query,
 } from 'tsoa';
 import * as express from 'express';
-import { UUID } from 'node:crypto';
 
 @Route('users')
 @Tags('Users')
