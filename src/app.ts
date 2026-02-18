@@ -9,8 +9,20 @@ import logger from './core/logger';
 import './preload';
 import pkg from '../package.json'
 import cors from 'cors';
+import { createBullBoard } from '@bull-board/api';
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { ExpressAdapter } from '@bull-board/express';
+import { characterQueue } from './worker/queue';
 
 const app = express();
+
+const serverAdapter = new ExpressAdapter();
+serverAdapter.setBasePath('/admin/queues');
+
+createBullBoard({
+    queues: [new BullMQAdapter(characterQueue)],
+    serverAdapter,
+});
 app.use(cors());
 
 // Middlewares
@@ -21,6 +33,7 @@ app.get('/health', (req, res) => {
     res.send({ version: pkg.version, status: 'ok', uptime: process.uptime() });
 });
 app.use(morgan('common'));
+app.use('/admin/queues', serverAdapter.getRouter());
 
 RegisterRoutes(app);
 
